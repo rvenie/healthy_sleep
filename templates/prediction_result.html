@@ -1,6 +1,49 @@
 {% extends "base.html" %}
-{% block body %}
-<h2>Результат: {{result}}</h2>
-<p>Осталось кредитов: {{credits}}</p>
-<a class="btn btn-primary" href="{{ url_for('predict.show_predict') }}">Новое предсказание</a>
+
+{% block title %}Результат предсказания{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">Результат предсказания</h2>
+            </div>
+            <div class="card-body">
+                <h3 class="card-title">Предсказанное качество сна: {{ prediction.prediction_result }}</h3>
+                <p class="card-text">Шкала качества сна: от 1 (очень плохое) до 10 (отличное)</p>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Дата и время:</strong> {{ prediction.timestamp.strftime('%d.%m.%Y %H:%M:%S') }}</p>
+                        <p><strong>Использованная модель:</strong> {{ prediction.model_id }}</p>
+                        <p><strong>Потрачено кредитов:</strong> {{ prediction.credits_spent }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Текущий баланс:</strong> {{ credits }} кредитов</p>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <h4>Рекомендации:</h4>
+                    <ul>
+                        {% if prediction.prediction_result < 5 %}
+                        <li>Старайтесь ложиться спать и просыпаться в одно и то же время каждый день.</li>
+                        <li>Избегайте употребления кофеина и алкоголя перед сном.</li>
+                        <li>Ограничьте использование электронных устройств перед сном.</li>
+                        <li>Создайте комфортную обстановку для сна - тихую, прохладную и темную.</li>
+                        {% else %}
+                        <li>Продолжайте поддерживать здоровый режим сна.</li>
+                        <li>Регулярная физическая активность помогает поддерживать хорошее качество сна.</li>
+                        <li>Следите за уровнем стресса и практикуйте методы релаксации.</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('prediction.predict_form') }}" class="btn btn-primary">Сделать еще одно предсказание</a>
+                <a href="{{ url_for('credit.balance') }}" class="btn btn-outline-secondary">Проверить баланс</a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

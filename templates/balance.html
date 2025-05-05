@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Баланс кредитов{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">Ваш баланс кредитов</h2>
+            </div>
+            <div class="card-body text-center">
+                <h1 class="display-1">{{ balance }}</h1>
+                <p class="lead">доступных кредитов</p>
+
+                <div class="alert alert-info mt-4">
+                    <h4 class="alert-heading">Стоимость моделей:</h4>
+                    {% for model in models.values() %}
+                    <ul class="list-unstyled">
+                        <li>{{ model.name }} - {{ model.credit_cost }} кредитов</li>
+                    </ul>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('prediction.predict_form') }}" class="btn btn-primary">Сделать предсказание</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

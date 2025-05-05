@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+
+{% block title %}Предсказание качества сна{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="mb-4">Предсказание качества сна</h2>
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Ваш баланс: {{ credits }} кредитов</h5>
+                <p class="card-text">Выберите модель и введите данные для предсказания.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="post" action="{{ url_for('prediction.predict') }}">
+    <div class="mb-4">
+        <h3>Выберите модель</h3>
+        <div class="row">
+            {% for model in models.values() %}
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ model.name }}</h5>
+                        <p class="card-text">Стоимость: {{ model.credit_cost }} кредитов</p>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="model_id" id="model{{ model.id }}" value="{{ model.id }}" {% if loop.first %}checked{% endif %}>
+                            <label class="form-check-label" for="model{{ model.id }}">
+                                Выбрать эту модель
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <h3>Введите данные</h3>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="Gender" class="form-label">Пол</label>
+                <select class="form-select" id="Gender" name="Gender" required>
+                    <option value="Male">Мужской</option>
+                    <option value="Female">Женский</option>
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="Age" class="form-label">Возраст</label>
+                <input type="number" class="form-control" id="Age" name="Age" min="1" max="120" required>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="Sleep duration" class="form-label">Продолжительность сна (часы)</label>
+                <input type="number" step="0.1" class="form-control" id="Sleep duration" name="Sleep duration" min="0" max="24" required>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="Stress level" class="form-label">Уровень стресса (1-10)</label>
+                <input type="number" class="form-control" id="Stress level" name="Stress level" min="1" max="10" required>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="Blood pressure" class="form-label">Кровяное давление</label>
+                <select class="form-select" id="Blood pressure" name="Blood pressure" required>
+                    <option value="Normal">Нормальное</option>
+                    <option value="Low">Низкое</option>
+                    <option value="High">Высокое</option>
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="Heart rate" class="form-label">Пульс (уд/мин)</label>
+                <input type="number" class="form-control" id="Heart rate" name="Heart rate" min="40" max="200" required>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="Daily steps" class="form-label">Шаги за день</label>
+                <input type="number" class="form-control" id="Daily steps" name="Daily steps" min="0" max="50000" required>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="Physical activity" class="form-label">Физическая активность (1-10)</label>
+                <input type="number" class="form-control" id="Physical activity" name="Physical activity" min="1" max="10" required>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="Height" class="form-label">Рост (см)</label>
+                <input type="number" class="form-control" id="Height" name="Height" min="100" max="250" required>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="Weight" class="form-label">Вес (кг)</label>
+                <input type="number" class="form-control" id="Weight" name="Weight" min="30" max="300" required>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="Sleep disorder" class="form-label">Нарушения сна</label>
+                <select class="form-select" id="Sleep disorder" name="Sleep disorder" required>
+                    <option value="None">Нет</option>
+                    <option value="Insomnia">Бессонница</option>
+                    <option value="Sleep Apnea">Апноэ сна</option>
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="Wake up during night" class="form-label">Просыпаетесь ночью?</label>
+                <select class="form-select" id="Wake up during night" name="Wake up during night" required>
+                    <option value="Yes">Да</option>
+                    <option value="No">Нет</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Добавьте остальные поля из набора данных аналогичным образом -->
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="Feel sleepy during day" class="form-label">Чувствуете сонливость днем?</label>
+                <select class="form-select" id="Feel sleepy during day" name="Feel sleepy during day" required>
+                    <option value="Yes">Да</option>
+                    <option value="No">Нет</option>
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="Caffeine consumption" class="form-label">Потребление кофеина</label>
+                <select class="form-select" id="Caffeine consumption" name="Caffeine consumption" required>
+                    <option value="Low">Низкое</option>
+                    <option value="Medium">Среднее</option>
+                    <option value="High">Высокое</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="Alcohol consumption" class="form-label">Потребление алкоголя</label>
+                <select class="form-select" id="Alcohol consumption" name="Alcohol consumption" required>
+                    <option value="Never">Никогда</option>
+                    <option value="Occasionally">Изредка</option>
+                    <option value="Frequently">Часто</option>
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="Smoking" class="form-label">Курение</label>
+                <select class="form-select" id="Smoking" name="Smoking" required>
+                    <option value="No">Нет</option>
+                    <option value="Yes">Да</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="Medical issue" class="form-label">Медицинские проблемы</label>
+                <select class="form-select" id="Medical issue" name="Medical issue" required>
+                    <option value="No">Нет</option>
+                    <option value="Yes">Да</option>
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="Ongoing medication" class="form-label">Принимаете ли медикаменты?</label>
+                <select class="form-select" id="Ongoing medication" name="Ongoing medication" required>
+                    <option value="No">Нет</option>
+                    <option value="Yes">Да</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="Smart device before bed" class="form-label">Пользуетесь электронными устройствами перед сном?</label>
+                <select class="form-select" id="Smart device before bed" name="Smart device before bed" required>
+                    <option value="No">Нет</option>
+                    <option value="Yes">Да</option>
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="Average screen time" class="form-label">Среднее время перед экраном (часы)</label>
+                <input type="number" step="0.1" class="form-control" id="Average screen time" name="Average screen time" min="0" max="24" required>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="Blue-light filter" class="form-label">Используете фильтр синего света?</label>
+                <select class="form-select" id="Blue-light filter" name="Blue-light filter" required>
+                    <option value="No">Нет</option>
+                    <option value="Yes">Да</option>
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="Discomfort Eye-strain" class="form-label">Дискомфорт/напряжение в глазах</label>
+                <select class="form-select" id="Discomfort Eye-strain" name="Discomfort Eye-strain" required>
+                    <option value="No">Нет</option>
+                    <option value="Yes">Да</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="Redness in eye" class="form-label">Покраснение глаз</label>
+                <select class="form-select" id="Redness in eye" name="Redness in eye" required>
+                    <option value="No">Нет</option>
+                    <option value="Yes">Да</option>
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="Itchiness/Irritation in eye" class="form-label">Зуд/раздражение глаз</label>
+                <select class="form-select" id="Itchiness/Irritation in eye" name="Itchiness/Irritation in eye" required>
+                    <option value="No">Нет</option>
+                    <option value="Yes">Да</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="Dry Eye Disease" class="form-label">Синдром сухого глаза</label>
+                <select class="form-select" id="Dry Eye Disease" name="Dry Eye Disease" required>
+                    <option value="No">Нет</option>
+                    <option value="Yes">Да</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-lg">Сделать предсказание</button>
+</form>
+{% endblock %}

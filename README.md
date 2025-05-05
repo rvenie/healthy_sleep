@@ -1,33 +1,3 @@
-Шаблон репозиотрия для курса "Практикум по разработки ML сервисов"
-
-
-```
-│
-├── core/                  # Ядро приложения (бизнес-логика)
-│   ├── entities/          # Сущности (бизнес-объекты)
-│   │   └── user.py        # Пример: класс User
-│   ├── use_cases/         # Сценарии использования (бизнес-правила)
-│   │   └── user_use_cases.py  # Пример: регистрация пользователя
-│   └── repositories/     # Интерфейсы репозиториев (абстракции для работы с данными)
-│       └── user_repository.py  # Пример: интерфейс UserRepository
-│
-├── infrastructure/       # Внешние зависимости и реализация
-│   ├── db/               # Работа с базой данных
-│   │   └── user_repository_impl.py  # Реализация UserRepository
-│   └── web/              # Веб-слой (API, HTTP-запросы)
-│       └── controllers/  # Контроллеры (обработчики запросов)
-│           └── user_controller.py  # Пример: обработчик запросов для пользователей
-│
-├── config/               # Конфигурация приложения
-│   └── settings.py       # Настройки (например, подключение к БД)
-│
-│
-└── main.py               # Точка входа в приложение
-
-```
-
-
-Описание слоев
 
 Core (Ядро):
 - entities: Содержит бизнес-сущности (например, User), которые представляют основные объекты предметной области.
@@ -41,3 +11,51 @@ Infrastructure (Инфраструктура):
 
 Config (Конфигурация):
 - main.py:  Точка входа в приложение, где инициализируются зависимости и запускается приложение.
+
+
+│
+├── core/
+│ ├── entities/
+│ │ ├── user.py
+│ │ ├── model.py
+│ │ └── prediction_log.py
+│ ├── repositories/
+│ │ ├── user_repository.py
+│ │ ├── model_repository.py
+│ │ └── log_repository.py
+│ └── use_cases/
+│ ├── user_use_cases.py
+│ └── model_use_cases.py
+│
+├── infrastructure/
+│ ├── db/
+│ │ ├── base.py
+│ │ ├── models.py
+│ │ ├── user_repository_impl.py
+│ │ ├── model_repository_impl.py
+│ │ └── log_repository_impl.py
+│ └── web/
+│ └── controllers/
+│ ├── user_controller.py
+│ ├── model_controller.py
+│ └── analytics_controller.py
+│
+├── config/
+│ └── settings.py
+│
+├── main.py
+└── requirements.txt
+
+
+flask routes
+Endpoint                 Methods    Rule
+-----------------------  ---------  -----------------------
+credit.balance           GET        /balance
+index                    GET        /
+prediction.predict       POST       /predict
+prediction.predict_form  GET        /predict
+static                   GET        /static/...
+user.login               GET, POST  /login
+user.logout              GET        /logout
+user.profile             GET        /profile
+user.register            GET, POST  /register

@@ -1,31 +1,79 @@
-from core.repositories.user_repository import UserRepository
+import json
 from core.entities.user import User
-from flask_sqlalchemy import SQLAlchemy
+from core.repositories.user_repository import UserRepository
+from infrastructure.db.sqlite_db import SQLiteDB
 
-db = SQLAlchemy()
-
-class UserModel(db.Model):
-    __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    password_hash = db.Column(db.String(200), nullable=False)
-    credits = db.Column(db.Integer, default=0)
 
 class UserRepositoryImpl(UserRepository):
-    def add(self, user: User) -> User:
-        db_user = UserModel(username=user.username, password_hash=user.password_hash, credits=user.credits)
-        db.session.add(db_user)
-        db.session.commit()
-        user.id = db_user.id
+    def __init__(self, db: SQLiteDB):
+        self.db = db
+
+    def create(self, user: User) -> User:
+        conn = self.db.get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "INSERT INTO users (username, password_hash, email, credits) VALUES (?, ?, ?, ?)",
+            (user.username, user.password_hash, user.email, user.credits)
+        )
+        conn.commit()
+
+        user.id = cursor.lastrowid
         return user
 
-    def find_by_username(self, username: str) -> User:
-        db_user = UserModel.query.filter_by(username=username).first()
-        if not db_user:
-            return None
-        return User(id=db_user.id, username=db_user.username, password_hash=db_user.password_hash, credits=db_user.credits)
+    def get_by_id(self, user_id: int) -> User:
+        conn = self.db.get_connection()
+        cursor = conn.cursor()
 
-    def update(self, user: User) -> None:
-        db_user = UserModel.query.get(user.id)
-        db_user.credits = user.credits
-        db.session.commit()
+        cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+        row = cursor.fetchone()
+
+        if not row:
+            return None
+
+        return User(
+            id=row["id"],
+            username=row["username"],
+            password_hash=row["password_hash"],
+            email=row["email"],
+            credits=row["credits"]
+        )
+
+    def get_by_username(self, username: str) -> User:
+        conn = self.db.get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
+        row = cursor.fetchone()
+
+        if not row:
+            return None
+
+        return User(
+            id=row["id"],
+            username=row["username"],
+            password_hash=row["password_hash"],
+            email=row["email"],
+            credits=row["credits"]
+        )
+
+    def update(self, user: User) -> User:
+        conn = self.db.get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "UPDATE users SET username = ?, password_hash = ?, email = ?, credits = ? WHERE id = ?",
+            (user.username, user.password_hash, user.email, user.credits, user.id)
+        )
+        conn.commit()
+
+        return user
+
+    def delete(self, user_id: int) -> bool:
+        conn = self.db.get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
+        conn.commit()
+
+        return cursor.rowcount > 0
