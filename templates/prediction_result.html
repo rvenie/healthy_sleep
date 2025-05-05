@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block body %}
+<h2>Результат: {{result}}</h2>
+<p>Осталось кредитов: {{credits}}</p>
+<a class="btn btn-primary" href="{{ url_for('predict.show_predict') }}">Новое предсказание</a>
+{% endblock %}
