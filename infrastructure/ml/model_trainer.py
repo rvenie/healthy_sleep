@@ -35,6 +35,7 @@ class ModelTrainer:
         return preprocessor
 
     def train_logistic_regression(self):
+        print('Начинаю обучение Логрег')
         preprocessor = self.prepare_data()
 
         # Создаем и обучаем модель логистической регрессии
@@ -57,6 +58,7 @@ class ModelTrainer:
         return self.model_repository.create(lr_model)
 
     def train_random_forest(self):
+        print('Начинаю обучение Случ Леса')
         preprocessor = self.prepare_data()
 
         # Создаем и обучаем модель Random Forest
@@ -79,6 +81,7 @@ class ModelTrainer:
         return self.model_repository.create(rf_model)
 
     def train_catboost(self):
+        print('Начинаю обучение Кэтбуста')
         preprocessor = self.prepare_data()
 
         # Создаем и обучаем модель CatBoost

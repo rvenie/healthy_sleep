@@ -2,3 +2,8 @@
 *.db
 __pycache__
 *.xml
+*.pkl
+*.tsv
+*.json
+*.tfevents
+catboost_info

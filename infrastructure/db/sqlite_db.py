@@ -170,15 +170,15 @@ class SQLiteDB:
                            )
                        ''')
 
-        # Вставляем информацию о моделях, если таблица пуста
-        cursor.execute("SELECT COUNT(*) FROM models")
-        if cursor.fetchone()[0] == 0:
-            cursor.execute('''
-                           INSERT INTO models (name, type, credit_cost, model_path)
-                           VALUES ("Логистическая регрессия", "LogisticRegression", 5,
-                                   "models/logistic_regression.pkl"),
-                                  ("Random Forest", "RandomForest", 10, "models/random_forest.pkl"),
-                                  ("CatBoost", "CatBoost", 15, "models/catboost.pkl")
-                           ''')
+        # # Вставляем информацию о моделях, если таблица пуста
+        # cursor.execute("SELECT COUNT(*) FROM models")
+        # if cursor.fetchone()[0] == 0:
+        #     cursor.execute('''
+        #                    INSERT INTO models (name, type, credit_cost, model_path)
+        #                    VALUES ("Логистическая регрессия", "LogisticRegression", 5,
+        #                            "models/logistic_regression.pkl"),
+        #                           ("Random Forest", "RandomForest", 10, "models/random_forest.pkl"),
+        #                           ("CatBoost", "CatBoost", 15, "models/catboost.pkl")
+        #                    ''')
 
         conn.commit()

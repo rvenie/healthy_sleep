@@ -32,4 +32,76 @@
         </div>
     </div>
 </div>
+<!-- Добавляем таблицу с историей предсказаний -->
+<div class="row justify-content-center mt-4">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">История предсказаний</h3>
+            </div>
+            <div class="card-body">
+                {% if predictions %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Дата</th>
+                                <th>Входные данные</th>
+                                <th>Результат</th>
+                                <th>Списано кредитов</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for prediction in predictions %}
+                            <tr>
+                                <td>{{ prediction.timestamp.strftime('%d.%m.%Y %H:%M') if prediction.timestamp else 'Н/Д' }}</td>
+                                <td>
+                                    {% if prediction.input_data is mapping %}
+                                    <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#predictionModal{{ prediction.id }}">
+                                        Показать {{ prediction.input_data | length }} параметров
+                                    </button>
+                                    
+                                    <div class="modal fade" id="predictionModal{{ prediction.id }}" tabindex="-1" role="dialog" aria-labelledby="predictionModalLabel{{ prediction.id }}" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="predictionModalLabel{{ prediction.id }}">Входные параметры</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <ul class="list-group">
+                                                        {% for key, value in prediction.input_data.items() %}
+                                                            <li class="list-group-item"><strong>{{ key }}:</strong> {{ value }}</li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    {% else %}
+                                        {{ prediction.input_data }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ prediction.prediction_result }}</td>
+                                <td>{{ prediction.credits_spent }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-center">У вас пока нет истории предсказаний.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
 {% endblock %}

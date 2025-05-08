@@ -1,16 +1,20 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from core.use_cases.user_use_cases import UserRegistrationUseCase, UserAuthenticationUseCase
 from core.repositories.user_repository import UserRepository
-
+from core.use_cases.prediction_use_cases import GetUserPredictionsUseCase
+import json
 user_bp = Blueprint("user", __name__)
 
 
-def __init__(user_repository: UserRepository):
+def __init__(user_repository: UserRepository, prediction_repository):
     # Инициализация use cases
-    global user_registration_use_case, user_authentication_use_case
+    global user_registration_use_case, user_authentication_use_case, get_user_predictions_use_case
     user_registration_use_case = UserRegistrationUseCase(user_repository)
     user_authentication_use_case = UserAuthenticationUseCase(user_repository)
+    get_user_predictions_use_case = GetUserPredictionsUseCase(prediction_repository)
     user_bp.user_repository = user_repository
+
+
 
 @user_bp.route("/register", methods=["GET", "POST"])
 def register():
@@ -62,5 +66,18 @@ def profile():
 
     user_id = session["user_id"]
     user = user_bp.user_repository.get_by_id(user_id)
+    
+    # Получаем историю предсказаний пользователя
+    predictions = get_user_predictions_use_case.execute(user_id)
+    
+    # Форматируем входные данные, если они хранятся как строка
+    for prediction in predictions:
+        if isinstance(prediction.input_data, str):
+            try:
+                prediction.input_data = json.loads(prediction.input_data)
+            except json.JSONDecodeError:
+                pass
+    
+    return render_template("profile.html", user=user, predictions=predictions)
 
-    return render_template("profile.html", user=user)
+

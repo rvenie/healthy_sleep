@@ -21,6 +21,7 @@ from infrastructure.web.controllers.credit_controller import credit_bp, __init__
 
 # Импортируем настройки
 from config.settings import SECRET_KEY, DATA_PATH
+from core.repositories.prediction_repository import PredictionRepository
 
 
 def create_app():
@@ -45,7 +46,9 @@ def create_app():
 
     # Проверяем, есть ли уже обученные модели в репозитории
     models = model_repository.get_all()
+    print('Модели есть, не обучаю')
     if not models:
+        print('Моделей нет, начинаю обучение')
         # Если моделей нет, обучаем их
         model_trainer = ModelTrainer(DATA_PATH, model_repository)
         models = model_trainer.train_all_models()
@@ -54,7 +57,7 @@ def create_app():
     init_models(model_repository, data_preprocessor)
 
     # Инициализируем контроллеры
-    init_user_controller(user_repository)
+    init_user_controller(user_repository, prediction_repository)
     init_prediction_controller(user_repository, model_repository, prediction_repository, credit_repository)
     init_credit_controller(credit_repository, user_repository)
 
