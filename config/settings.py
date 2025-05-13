@@ -2,7 +2,6 @@ import os
 
 # Путь к базе данных
 DB_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "sleep_prediction.db")
-SQLALCHEMY_DATABASE_URI = f"sqlite:///{DB_PATH}"
 
 # Путь к файлу с данными
 DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "Dry_Eye_Dataset.csv")
@@ -11,8 +10,8 @@ DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file_
 SECRET_KEY = "your-secret-key-for-sessions"
 
 # Настройки стоимости кредитов для моделей
-MODEL_COSTS = {
-    "Логистическая регрессия": 10,
-    "Random Forest": 20,
-    "CatBoost": 30
-}
+# MODEL_COSTS = {
+#     "Логистическая регрессия": 10,
+#     "Random Forest": 20,
+#     "CatBoost": 30
+# }

@@ -1,8 +1,6 @@
 import pandas as pd
-import numpy as np
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
 import os
 
 
@@ -20,13 +18,13 @@ class DataPreprocessor:
 
         df = pd.read_csv(self.data_path)
 
-        # Целевая переменная - Sleep quality
+        # Целевая переменная
         self.y = df["Sleep quality"].values
 
-        # Удаляем целевую переменную из признаков
+        # Удаляем из признаков
         df = df.drop(["Sleep quality"], axis=1)
 
-        # Сохраняем имена признаков для дальнейшего использования
+        # имена признаков
         self.feature_names = df.columns.tolist()
 
         # Разделяем числовые и категориальные признаки

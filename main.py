@@ -31,7 +31,7 @@ def create_app():
     # Инициализируем базу данных
     db = SQLiteDB()
 
-    # Инициализируем репозитории
+    # Репозитории
     user_repository = UserRepositoryImpl(db)
     model_repository = ModelRepositoryImpl(db)
     prediction_repository = PredictionRepositoryImpl(db)
@@ -41,10 +41,10 @@ def create_app():
     if not os.path.exists(DATA_PATH):
         raise FileNotFoundError(f"Файл с данными не найден: {DATA_PATH}")
 
-    # Инициализируем предобработку данных
+    # Предобработку данных
     data_preprocessor = DataPreprocessor(DATA_PATH)
 
-    # Проверяем, есть ли уже обученные модели в репозитории
+    # Есть ли обученные модели в репозитории
     models = model_repository.get_all()
     print('Модели есть, не обучаю')
     if not models:
@@ -53,10 +53,10 @@ def create_app():
         model_trainer = ModelTrainer(DATA_PATH, model_repository)
         models = model_trainer.train_all_models()
 
-    # Инициализируем хранилище моделей
+    # хранилище моделей
     init_models(model_repository, data_preprocessor)
 
-    # Инициализируем контроллеры
+    # контроллеры
     init_user_controller(user_repository, prediction_repository)
     init_prediction_controller(user_repository, model_repository, prediction_repository, credit_repository)
     init_credit_controller(credit_repository, user_repository)

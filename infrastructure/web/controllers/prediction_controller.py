@@ -77,7 +77,7 @@ def predict():
         return render_template(
             "prediction_result.html",
             prediction=prediction,
-            credits=user.credits  # Добавляем кредиты
+            credits=user.credits
         )
     except ValueError as e:
         flash(str(e), "danger")

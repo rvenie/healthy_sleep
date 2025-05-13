@@ -12,6 +12,19 @@
             <div class="card-body text-center">
                 <h1 class="display-1">{{ balance }}</h1>
                 <p class="lead">доступных кредитов</p>
+                
+                <!-- Добавляем форму для пополнения кредитов -->
+                <div class="mt-4 mb-4 p-3 border rounded bg-light">
+                    <h4>Пополнить баланс</h4>
+                    <form action="{{ url_for('credit.add_credits') }}" method="POST" class="form-inline justify-content-center">
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="credits_amount" name="credits_amount" min="1" placeholder="Количество кредитов" required>
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-success">Пополнить</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
 
                 <div class="alert alert-info mt-4">
                     <h4 class="alert-heading">Стоимость моделей:</h4>
@@ -27,5 +40,6 @@
             </div>
         </div>
     </div>
+
 </div>
 {% endblock %}

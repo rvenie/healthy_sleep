@@ -7,3 +7,7 @@ __pycache__
 *.json
 *.tfevents
 catboost_info
+add_features.md
+doc.md
+add_features.md
+abstract_class.md

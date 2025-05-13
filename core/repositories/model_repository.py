@@ -26,5 +26,3 @@ class ModelRepository(ABC):
     @abstractmethod
     def delete(self, model_id: int) -> bool:
         pass
-
-# Абстрактный класс, определяющий интерфейс для работы с моделями в хранилище данных.

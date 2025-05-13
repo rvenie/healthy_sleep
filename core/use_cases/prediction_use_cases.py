@@ -3,6 +3,7 @@ from core.repositories.prediction_repository import PredictionRepository
 from core.repositories.model_repository import ModelRepository
 from core.repositories.user_repository import UserRepository
 from core.use_cases.credit_use_cases import DeductCreditsUseCase
+import pandas as pd
 
 
 class MakePredictionUseCase:
@@ -28,10 +29,8 @@ class MakePredictionUseCase:
             amount=model.credit_cost,
             operation_type="prediction"
         )
-        import pandas as pd
         input_df = pd.DataFrame([input_data])
         # Выполняем предсказание
-        # prediction_result = model.model_object.predict([list(input_data.values())])[0]
         prediction_result = model.model_object.predict(input_df)[0]
         # Создаем запись о предсказании
         prediction = Prediction(
