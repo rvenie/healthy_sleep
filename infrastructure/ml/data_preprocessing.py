@@ -31,7 +31,7 @@ class DataPreprocessor:
         numeric_features = df.select_dtypes(include=["int64", "float64"]).columns.tolist()
         categorical_features = df.select_dtypes(include=["object"]).columns.tolist()
 
-        # Создаем преобразователь для предобработки данных
+        # пайп для работы над категориями
         preprocessor = ColumnTransformer(
             transformers=[
                 ("num", StandardScaler(), numeric_features),
@@ -39,7 +39,6 @@ class DataPreprocessor:
             ]
         )
 
-        # Применяем преобразования к данным
         self.X = df.copy()
         self.preprocessor = preprocessor
 
@@ -49,11 +48,11 @@ class DataPreprocessor:
         return self.feature_names
 
     def transform_input_data(self, input_data):
-        # Преобразуем входные данные в формат, понятный модели
+        # в Пандас
         input_df = pd.DataFrame([input_data])
 
-        # Убеждаемся, что у нас правильный порядок столбцов
+        # метчимся с фичами модели
         input_df = input_df[self.feature_names]
 
-        # Применяем преобразования
+        # Обрабатываем
         return self.preprocessor.transform(input_df)

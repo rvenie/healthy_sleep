@@ -7,7 +7,6 @@ user_bp = Blueprint("user", __name__)
 
 
 def __init__(user_repository: UserRepository, prediction_repository):
-    # Инициализация use cases
     global user_registration_use_case, user_authentication_use_case, get_user_predictions_use_case
     user_registration_use_case = UserRegistrationUseCase(user_repository)
     user_authentication_use_case = UserAuthenticationUseCase(user_repository)
@@ -67,10 +66,9 @@ def profile():
     user_id = session["user_id"]
     user = user_bp.user_repository.get_by_id(user_id)
     
-    # Получаем историю предсказаний пользователя
+    # История предиктов
     predictions = get_user_predictions_use_case.execute(user_id)
     
-    # Форматируем входные данные, если они хранятся как строка
     for prediction in predictions:
         if isinstance(prediction.input_data, str):
             try:

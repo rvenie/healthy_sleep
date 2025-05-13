@@ -14,7 +14,7 @@ class CreditRepositoryImpl(CreditRepository):
         conn = self.db.get_connection() 
         cursor = conn.cursor()  
 
-        # Выполняем SQL-запрос на вставку новой записи в таблицу 'credits'
+        # новая запись в credits
         cursor.execute(
             """
             INSERT INTO credits
@@ -30,22 +30,22 @@ class CreditRepositoryImpl(CreditRepository):
             )
         )
         conn.commit()  
-
-        credit.id = cursor.lastrowid  # Получаем ID последней вставленной строки и присваиваем его объекту credit
+        # ID последней вставленной строки = credit
+        credit.id = cursor.lastrowid  
         return credit 
 
     def get_by_id(self, credit_id: int) -> Credit | None:
         conn = self.db.get_connection()
         cursor = conn.cursor()
 
-        # Выполняем SQL-запрос на выборку записи из таблицы 'credits' по ID
+        # запрос по ID
         cursor.execute("SELECT * FROM credits WHERE id = ?", (credit_id,))
         row = cursor.fetchone()
 
         if not row:
             return None
 
-        # Создаем и возвращаем объект Credit на основе данных из базы
+        # возвращаем Credit
         return Credit(
             id=row["id"],
             user_id=row["user_id"],
@@ -59,13 +59,13 @@ class CreditRepositoryImpl(CreditRepository):
         conn = self.db.get_connection()
         cursor = conn.cursor()
 
-        # Выполняем SQL-запрос на выборку всех записей из таблицы 'credits' для указанного user_id
+        # для указанного user_id
         cursor.execute("SELECT * FROM credits WHERE user_id = ?", (user_id,))
         rows = cursor.fetchall()  # Извлекаем все строки результата
         # для хранения  Credit
         credits = []
         for row in rows:
-            # Для каждой строки создаем объект Credit и добавляем его в список
+            # Для каждой создать Credit и добавить его в список
             credits.append(Credit(
                 id=row["id"],
                 user_id=row["user_id"],
@@ -95,7 +95,6 @@ class CreditRepositoryImpl(CreditRepository):
         conn = self.db.get_connection()
         cursor = conn.cursor()
 
-        # Выполняем SQL-запрос на обновление записи в таблице 'credits'
         cursor.execute(
             """
             UPDATE credits
@@ -112,7 +111,7 @@ class CreditRepositoryImpl(CreditRepository):
                 credit.operation_type,
                 credit.timestamp.isoformat(),
                 credit.balance_after,
-                credit.id  # Обновляем запись по её ID
+                credit.id
             )
         )
         conn.commit()

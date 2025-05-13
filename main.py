@@ -46,7 +46,6 @@ def create_app():
 
     # Есть ли обученные модели в репозитории
     models = model_repository.get_all()
-    print('Модели есть, не обучаю')
     if not models:
         print('Моделей нет, начинаю обучение')
         # Если моделей нет, обучаем их

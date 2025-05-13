@@ -22,5 +22,3 @@ class UserRepository(ABC):
     @abstractmethod
     def delete(self, user_id: int) -> bool:
         pass
-
-# Абстрактный класс, определяющий интерфейс для работы с пользователями в хранилище данных.

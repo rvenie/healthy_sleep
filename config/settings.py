@@ -8,10 +8,3 @@ DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file_
 
 # Секретный ключ для сессий
 SECRET_KEY = "your-secret-key-for-sessions"
-
-# Настройки стоимости кредитов для моделей
-# MODEL_COSTS = {
-#     "Логистическая регрессия": 10,
-#     "Random Forest": 20,
-#     "CatBoost": 30
-# }

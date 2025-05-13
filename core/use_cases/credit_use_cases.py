@@ -17,10 +17,9 @@ class DeductCreditsUseCase:
         self.user_repository = user_repository
 
     def execute(self, user_id: int, amount: int, operation_type: str) -> Credit:
-        # Получаем текущий баланс пользователя
+        # текущий баланс пользователя
         current_balance = self.credit_repository.get_current_balance(user_id)
 
-        # Проверяем, достаточно ли кредитов
         if current_balance < amount:
             raise ValueError("Недостаточно кредитов на счете")
 
@@ -32,12 +31,12 @@ class DeductCreditsUseCase:
             balance_after=current_balance - amount
         )
 
-        # Обновляем баланс пользователя
+        # Обновляем баланс
         user = self.user_repository.get_by_id(user_id)
         user.credits -= amount
         self.user_repository.update(user)
 
-        # Сохраняем запись о списании
+        # Сохраняем 
         return self.credit_repository.create(credit)
     
 class AddCreditsUseCase:
@@ -46,25 +45,25 @@ class AddCreditsUseCase:
         self.user_repository = user_repository
     
     def execute(self, user_id: int, amount: int, operation_type: str = "manual_add") -> int:
-        # Получаем текущий баланс
+        # текущий баланс
         current_balance = self.credit_repository.get_current_balance(user_id)
         
-        # Вычисляем новый баланс
+        # новый баланс
         new_balance = current_balance + amount
         
-        # Создаем запись о пополнении кредитов
+        # Запись о пополнении кредитов
         credit = Credit(
             user_id=user_id,
-            amount=amount,  # Положительное значение для пополнения
+            amount=amount,
             operation_type=operation_type,
             timestamp=datetime.now(),
             balance_after=new_balance
         )
         
-        # Сохраняем запись о транзакции
+        # Сохраняем транзакцию
         self.credit_repository.create(credit)
         
-        # Обновляем баланс пользователя
+        # Обновляем баланс у юзера
         user = self.user_repository.get_by_id(user_id)
         user.credits = new_balance
         self.user_repository.update(user)

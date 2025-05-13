@@ -24,10 +24,10 @@ class ModelTrainer:
         self.y_test = None
 
     def prepare_data(self):
-        # Загружаем и подготавливаем данные
+        # Предобработка
         self.X, self.y, preprocessor = self.preprocessor.load_data()
 
-        # Разделяем данные на обучающую и тестовую выборки
+        # Разделяем
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
             self.X, self.y, test_size=0.2, random_state=42
         )
@@ -38,7 +38,6 @@ class ModelTrainer:
         print('Начинаю обучение Логрег')
         preprocessor = self.prepare_data()
 
-        # Создаем и обучаем модель логистической регрессии
         model = Pipeline([
             ("preprocessor", preprocessor),
             ("classifier", LogisticRegression(max_iter=1000, random_state=42))
@@ -46,7 +45,6 @@ class ModelTrainer:
 
         model.fit(self.X_train, self.y_train)
 
-        # Создаем объект модели для сохранения в базе данных
         lr_model = Model(
             name="Логистическая регрессия",
             type="LogisticRegression",
@@ -54,14 +52,12 @@ class ModelTrainer:
             model_object=model
         )
 
-        # Сохраняем модель в репозитории
         return self.model_repository.create(lr_model)
 
     def train_random_forest(self):
         print('Начинаю обучение Случ Леса')
         preprocessor = self.prepare_data()
 
-        # Создаем и обучаем модель Random Forest
         model = Pipeline([
             ("preprocessor", preprocessor),
             ("classifier", RandomForestClassifier(n_estimators=100, random_state=42))
@@ -69,7 +65,6 @@ class ModelTrainer:
 
         model.fit(self.X_train, self.y_train)
 
-        # Создаем объект модели для сохранения в базе данных
         rf_model = Model(
             name="Random Forest",
             type="RandomForest",
@@ -77,14 +72,12 @@ class ModelTrainer:
             model_object=model
         )
 
-        # Сохраняем модель в репозитории
         return self.model_repository.create(rf_model)
 
     def train_catboost(self):
         print('Начинаю обучение Кэтбуста')
         preprocessor = self.prepare_data()
 
-        # Создаем и обучаем модель CatBoost
         model = Pipeline([
             ("preprocessor", preprocessor),
             ("classifier", CatBoostClassifier(iterations=100, learning_rate=0.1, random_state=42, verbose=False))
@@ -92,7 +85,6 @@ class ModelTrainer:
 
         model.fit(self.X_train, self.y_train)
 
-        # Создаем объект модели для сохранения в базе данных
         cb_model = Model(
             name="CatBoost",
             type="CatBoost",
@@ -100,7 +92,6 @@ class ModelTrainer:
             model_object=model
         )
 
-        # Сохраняем модель в репозитории
         return self.model_repository.create(cb_model)
 
     def train_all_models(self):

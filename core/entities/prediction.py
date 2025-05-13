@@ -10,5 +10,3 @@ class Prediction:
         self.prediction_result = prediction_result  # Результат предсказания
         self.timestamp = timestamp or datetime.now()  # Время предсказания
         self.credits_spent = credits_spent  # Количество потраченных кредитов
-
-# Данный класс представляет результат предсказания. Хранит информацию о пользователе, модели, входных данных, результате и потраченных кредитах.

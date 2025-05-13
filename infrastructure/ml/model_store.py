@@ -3,7 +3,7 @@ from core.entities.model import Model
 
 models_dict: Dict[str, Model] = {}
 feature_names: list = []
-
+# Чтобы не грузить с БД постоянно
 
 def init_models(model_repository, data_preprocessor):
     global models_dict, feature_names

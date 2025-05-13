@@ -7,14 +7,12 @@ from infrastructure.ml.model_store import get_all_models, get_feature_names
 
 prediction_bp = Blueprint("prediction", __name__)
 
-# Глобальные переменные для use cases
 make_prediction_use_case = None
 deduct_credits_use_case = None
 
 
 def __init__(user_repository: UserRepository, model_repository: ModelRepository,
              prediction_repository, credit_repository):
-    # Инициализация use cases
     global make_prediction_use_case, deduct_credits_use_case
     deduct_credits_use_case = DeductCreditsUseCase(credit_repository, user_repository)
     make_prediction_use_case = MakePredictionUseCase(
@@ -43,7 +41,7 @@ def predict_form():
         "predict.html",
         models=models,
         features=features,
-        credits=user.credits  # Передаем количество кредитов в шаблон
+        credits=user.credits
     )
 
 
@@ -70,7 +68,7 @@ def predict():
                 input_data[field_name] = value
 
     try:
-        # Выполняем предсказание
+        # Тут предиктим
         prediction = make_prediction_use_case.execute(user_id, model_id, input_data)
         flash(f"Предсказанное качество сна: {prediction.prediction_result}", "success")
         user = prediction_bp.user_repository.get_by_id(user_id)

@@ -30,9 +30,11 @@ class MakePredictionUseCase:
             operation_type="prediction"
         )
         input_df = pd.DataFrame([input_data])
-        # Выполняем предсказание
+
+        # Предиктим
         prediction_result = model.model_object.predict(input_df)[0]
-        # Создаем запись о предсказании
+
+        # Запись о предсказании
         prediction = Prediction(
             user_id=user_id,
             model_id=model_id,
@@ -41,11 +43,12 @@ class MakePredictionUseCase:
             credits_spent=model.credit_cost
         )
 
-        # Сохраняем предсказание
+        # Сохраняем
         return self.prediction_repository.create(prediction)
 
 
 class GetUserPredictionsUseCase:
+    # Получаем какие предсказания делал юзер
     def __init__(self, prediction_repository: PredictionRepository):
         self.prediction_repository = prediction_repository
 

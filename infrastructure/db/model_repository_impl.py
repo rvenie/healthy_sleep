@@ -9,11 +9,11 @@ class ModelRepositoryImpl(ModelRepository):
 
         self.db = db
         self.models_directory = models_directory
-        # Создаем директорию для моделей, если она еще не существует.
+        # если не существует
         os.makedirs(self.models_directory, exist_ok=True)
 
     def _path_for(self, model: Model) -> str:
-        # Имя файла модели. Можно добавить ID, timestamp или версию для уникальности,
+        # Название файла модели
         filename = f"{model.name}.pkl" 
         return os.path.join(self.models_directory, filename)
 
@@ -21,12 +21,11 @@ class ModelRepositoryImpl(ModelRepository):
         conn = self.db.get_connection()
         cursor = conn.cursor()
 
-        # Сохраняем объект модели (например, Pipeline scikit-learn) на диск
+        # Путь для сохранения модели на диске
         model_path = self._path_for(model)
-        # Сериализуем и сохраняем объект модели
         dump(model.model_object, model_path)
 
-        # Выполняем SQL-запрос на вставку метаданных модели в таблицу 'models'
+        # Модель в базе
         cursor.execute(
             "INSERT INTO models (name, type, credit_cost, model_path) VALUES (?, ?, ?, ?)",
             (model.name, model.type, model.credit_cost, model_path)
@@ -38,7 +37,7 @@ class ModelRepositoryImpl(ModelRepository):
     def get_by_id(self, model_id: int) -> Model | None:
         conn = self.db.get_connection()
         cursor = conn.cursor()
-        # Выполняем SQL-запрос на выборку записи из таблицы 'models' по ID
+        # по id
         cursor.execute("SELECT * FROM models WHERE id = ?", (model_id,))
         row = cursor.fetchone()
 
@@ -46,14 +45,14 @@ class ModelRepositoryImpl(ModelRepository):
             return None
 
         model_path = row["model_path"]
-        # Загружаем объект модели с диска
+        # Загружаем модель с диска
         model_object = load(model_path)
 
-        # Проверка, что загруженный объект имеет метод predict
+        # Проверка на формат
         if not hasattr(model_object, "predict"):
             raise ValueError(f"Файл {model_path} не содержит объект модели с методом predict")
 
-        # Создаем и возвращаем объект Model на основе данных из базы и загруженного объекта модели
+        # Возврщаем модель
         return Model(
             id=row["id"],
             name=row["name"],
@@ -65,16 +64,16 @@ class ModelRepositoryImpl(ModelRepository):
     def get_by_name(self, name: str) -> Model | None:
         conn = self.db.get_connection()
         cursor = conn.cursor()
-        # Выполняем SQL-запрос на выборку записи из таблицы 'models' по имени
+        # Для обращения по имени
         cursor.execute("SELECT * FROM models WHERE name = ?", (name,))
         row = cursor.fetchone()
 
         if not row:
             return None
 
-        # Загружаем объект модели с диска по пути, указанному в БД
+        # Загружаем 
         model_object = load(row["model_path"])
-        # Создаем и возвращаем объект Model
+        # Возвращаем
         return Model(
             id=row["id"],
             name=row["name"],
@@ -86,10 +85,10 @@ class ModelRepositoryImpl(ModelRepository):
     def get_all(self) -> list[Model]:
         conn = self.db.get_connection()
         cursor = conn.cursor()
-        # Выбираем только метаданные, без model_path, так как сами модели не загружаем
+        # Просто собрать все имеющиеся модели
         cursor.execute("SELECT id, name, type, credit_cost FROM models")
         rows = cursor.fetchall()  # Извлекаем все строки результата
-        # Создаем список объектов Model. model_object не устанавливается (остается None по умолчанию).
+        # Вовзращаем список
         return [
             Model(id=r["id"], name=r["name"], type=r["type"], credit_cost=r["credit_cost"])
             for r in rows

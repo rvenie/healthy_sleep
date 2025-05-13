@@ -6,12 +6,11 @@ from infrastructure.ml.model_store import get_all_models
 
 credit_bp = Blueprint("credit", __name__)
 
-# Глобальные переменные для use cases
+# Глоб
 get_user_balance_use_case = None
 add_credits_use_case = None
 
 def __init__(credit_repository: CreditRepository, user_repository: UserRepository):
-    # Инициализация use cases
     global get_user_balance_use_case, add_credits_use_case
     get_user_balance_use_case = GetUserBalanceUseCase(credit_repository)
     add_credits_use_case = AddCreditsUseCase(credit_repository, user_repository)
@@ -37,12 +36,12 @@ def add_credits():
     user_id = session["user_id"]
     credits_amount = request.form.get("credits_amount", type=int, default=0)
     
-    # Проверка валидности введенного числа
+    # Валидация
     if credits_amount <= 0:
         flash("Пожалуйста, введите положительное число кредитов.", "warning")
         return redirect(url_for("credit.balance"))
     
-    # Пополнение баланса
+    # Пополнение
     add_credits_use_case.execute(user_id, credits_amount, "manual_add")
     
     flash(f"Ваш баланс успешно пополнен на {credits_amount} кредитов!", "success")
